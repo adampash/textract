@@ -1,5 +1,5 @@
 require "textract/version"
-require 'httparty'
+require 'mechanize'
 require 'nokogiri'
 require 'opengraph_parser'
 require 'reverse_markdown'
@@ -21,6 +21,7 @@ module Textract
     if selectors.nil?
       article = doc.search('article')
     else
+      require 'pry'; binding.pry
       article = doc.search(selectors)
     end
     if article.count == 1
@@ -30,7 +31,6 @@ module Textract
       i = 1
       until els.count < 2
         search_text = description.split(" ")[0..i].join(" ")
-        puts search_text
         els = doc.search "[text()*='#{search_text}']"
         i += 1
       end
@@ -66,7 +66,9 @@ module Textract
 
     def initialize(url, selectors)
       @url = url
-      @html = HTTParty.get url
+      agent = Mechanize.new
+      agent.user_agent_alias = 'Mac Safari'
+      @html = agent.get(url).content
       @tags = Textract.get_og_tags(@html)
       if @tags.nil? or @tags.description.nil?
         # use readability method
