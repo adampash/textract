@@ -37,4 +37,10 @@ describe Textract do
     expect(Textract.get_author(html)).to eq "Adam Pash"
   end
 
+  it "converts itself to json" do
+    url = "http://gawker.com/1694508525"
+    article = Textract.get_text(url)
+    expect(article.to_json).to be_a_kind_of String
+  end
+
 end

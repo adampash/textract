@@ -85,5 +85,19 @@ module Textract
       @author = @article.author || Textract.get_author(@html)
       @title = @tags.title || Textract.get_page_title(@html)
     end
+
+    def to_json
+      to_h.to_json
+    end
+
+    def to_h
+      {
+        url: @url,
+        text: @text,
+        md5: @md5,
+        author: @author,
+        title: @title,
+      }
+    end
   end
 end
