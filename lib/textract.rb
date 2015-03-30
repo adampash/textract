@@ -2,6 +2,7 @@ require "textract/version"
 require 'httparty'
 require 'nokogiri'
 require 'opengraph_parser'
+require 'reverse_markdown'
 
 module Textract
   # attr_accessor :client
@@ -16,19 +17,27 @@ module Textract
 
   def self.get_text_from_description(html, description)
     doc = Nokogiri::HTML html
-    if description.split(" ").count > 20
-      search_text = description[10...20]
+    article = doc.search('article')
+    if article.count == 1
+      article_el = article[0]
+      # article_el.search('header').remove
     else
-      search_text = description
+      els = [1,2,3]
+      i = 1
+      until els.count < 2
+        search_text = description.split(" ")[0..i].join(" ")
+        puts search_text
+        els = doc.search "[text()*='#{search_text}']"
+        i += 1
+      end
+      if els.count == 1
+        el = els[0]
+        article_el = el.parent
+      else
+        # do something else if multiple or no matches
+      end
     end
-    els = doc.search "[text()*='#{description[5...15]}']"
-    if els.count == 1
-      el = els[0]
-    else
-      # do something else if multiple matches
-    end
-    parent = el.parent
-    require 'pry'; binding.pry
+    markdown = ReverseMarkdown.convert article_el, unknown_tags: :bypass # TODO change to drop once article is supported by reversemarkdown
   end
 
   class Client
@@ -45,6 +54,8 @@ module Textract
         # use readability method
       else
         @text = Textract.get_text_from_description(@html, @tags.description)
+        @title = @tags.title
+        require 'pry'; binding.pry
       end
     end
   end
