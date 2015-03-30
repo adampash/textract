@@ -58,12 +58,18 @@ module Textract
     name_meta.attribute('content').value unless name_meta.empty?
   end
 
+  def self.generate_hash(text)
+    # require 'pry'; binding.pry
+    Digest::MD5.hexdigest text
+  end
+
   class Client
     attr_reader :html
     attr_reader :url
     attr_reader :tags
     attr_reader :title
     attr_reader :text
+    attr_reader :md5
     attr_reader :author
 
     def initialize(url, selectors)
@@ -75,6 +81,7 @@ module Textract
 
       @article = Textract.get_text_from_description(@html, @tags.description, selectors)
       @text = ReverseMarkdown.convert @article.content, unknown_tags: :bypass
+      @md5 = Textract.generate_hash @text
       @author = @article.author || Textract.get_author(@html)
       @title = @tags.title || Textract.get_page_title(@html)
     end

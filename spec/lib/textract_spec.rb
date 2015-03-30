@@ -10,6 +10,7 @@ describe Textract do
     url = "http://gawker.com/1694508525"
     article = Textract.get_text(url)
     expect(article.text[0..5]).to eq "Import"
+    expect(article.md5).to eq "ae57104339fbd6455a91f8ebdc94b90c"
     expect(article.author).to eq "Hamilton Nolan"
   end
 
