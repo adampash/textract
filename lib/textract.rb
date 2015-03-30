@@ -54,8 +54,7 @@ module Textract
   end
 
   def self.get_page_title(html)
-    title = Nokogiri::HTML(html).search('title')
-    require 'pry'; binding.pry
+    Nokogiri::HTML(html).search('title').text
   end
 
   class Client

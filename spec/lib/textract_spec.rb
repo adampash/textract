@@ -15,7 +15,6 @@ describe Textract do
   it "returns article text based on opengraph description" do
     url = "http://www.tedcruz.org/record/our-standard-the-constitution/"
     textract = Textract.get_text(url)
-    puts textract.text
     expect(textract.text[0..5]).to eq "Ted Cr"
   end
 
@@ -24,6 +23,11 @@ describe Textract do
     textract = Textract.get_text(url, 'p.ProfileHeaderCard-bio.u-dir')
     expect(textract.text.strip).to eq "Don't live to geek; geek to live."
     expect(textract.title).to eq "Lifehacker (@lifehacker) | Twitter"
+  end
+
+  it "gets the page title from the title tag" do
+    html = "<html><head><title>Stuff</title></head><body><h1>FOO!</h1></body></html>"
+    expect(Textract.get_page_title(html)).to eq "Stuff"
   end
 
 end
