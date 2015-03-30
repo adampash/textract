@@ -21,7 +21,6 @@ module Textract
     if selectors.nil?
       article = doc.search('article')
     else
-      require 'pry'; binding.pry
       article = doc.search(selectors)
     end
     if article.count == 1
@@ -47,14 +46,16 @@ module Textract
                                         tags: %w[div span p a img ul ol li blockquote table tr td h1 h2 h3 h4 h5 b em i strong],
                                         attributes: %w[src href],
                                         remove_empty_nodes: true,
-                                       ).content
-    markdown = ReverseMarkdown.convert article, unknown_tags: :bypass
-    # TODO change to drop once article is supported by reversemarkdown
-    markdown
+                                       )
   end
 
   def self.get_page_title(html)
-    Nokogiri::HTML(html).search('title').text
+    Nokogiri::HTML(html).search('head').search('title').text
+  end
+
+  def self.get_author(html)
+    name_meta = Nokogiri::HTML(html).search('meta[name="author"]')
+    name_meta.attribute('content').value unless name_meta.empty?
   end
 
   class Client
@@ -63,6 +64,7 @@ module Textract
     attr_reader :tags
     attr_reader :title
     attr_reader :text
+    attr_reader :author
 
     def initialize(url, selectors)
       @url = url
@@ -70,14 +72,11 @@ module Textract
       agent.user_agent_alias = 'Mac Safari'
       @html = agent.get(url).content
       @tags = Textract.get_og_tags(@html)
-      if @tags.nil? or @tags.description.nil?
-        # use readability method
-        @text = Textract.get_text_from_description(@html, nil, selectors)
-        @title = Textract.get_page_title(@html)
-      else
-        @text = Textract.get_text_from_description(@html, @tags.description, selectors)
-        @title = @tags.title
-      end
+
+      @article = Textract.get_text_from_description(@html, @tags.description, selectors)
+      @text = ReverseMarkdown.convert @article.content, unknown_tags: :bypass
+      @author = @article.author || Textract.get_author(@html)
+      @title = @tags.title || Textract.get_page_title(@html)
     end
   end
 end
