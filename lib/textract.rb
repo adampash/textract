@@ -94,8 +94,8 @@ module Textract
       @title = @tags.title || Textract.get_page_title(@html)
     end
 
-    def to_json
-      super to_h
+    def as_json
+      to_h.to_json
     end
 
     def to_h
