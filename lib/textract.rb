@@ -16,7 +16,7 @@ module Textract
     OpenGraph.new(html)
   end
 
-  def self.get_text_from_description(html, description, selectors)
+  def self.smart_extract(html, description, selectors)
     doc = Nokogiri::HTML html
     if selectors.nil?
       article = doc.search('article')
@@ -72,22 +72,26 @@ module Textract
     attr_reader :md5
     attr_reader :author
 
-    def initialize(url, selectors)
+    def initialize(url, selectors, format="markdown")
       @url = url
       agent = Mechanize.new
       agent.user_agent_alias = 'Mac Safari'
       @html = agent.get(url).content
       @tags = Textract.get_og_tags(@html)
 
-      @article = Textract.get_text_from_description(@html, @tags.description, selectors)
-      @text = ReverseMarkdown.convert @article.content, unknown_tags: :bypass
+      @article = Textract.smart_extract(@html, @tags.description, selectors)
+      if @article.content.nil?
+        @text = ""
+      else
+        if format == 'markdown'
+          @text = ReverseMarkdown.convert @article.content, unknown_tags: :bypass
+        else
+          @text = @article.content
+        end
+      end
       @md5 = Textract.generate_hash @text
       @author = @article.author || Textract.get_author(@html)
       @title = @tags.title || Textract.get_page_title(@html)
-    end
-
-    def to_json
-      to_h.to_json
     end
 
     def to_h
