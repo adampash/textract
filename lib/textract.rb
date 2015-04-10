@@ -42,10 +42,10 @@ module Textract
     else
       article_el = doc
     end
-    article = Readability::Document.new(article_el.to_s,
+    Readability::Document.new(article_el.to_s,
                                         tags: %w[div span p a img ul ol li blockquote table tr td h1 h2 h3 h4 h5 b em i strong],
                                         attributes: %w[src href],
-                                        remove_empty_nodes: true,
+                                        remove_empty_nodes: false,
                                        )
   end
 
