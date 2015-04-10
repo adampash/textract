@@ -8,8 +8,8 @@ require 'readability'
 module Textract
   # attr_accessor :client
 
-  def self.get_text(url, selectors=nil)
-    @client = Client.new(url, selectors)
+  def self.get_text(url, selectors=nil, format="markdown")
+    @client = Client.new(url, selectors, format)
   end
 
   def self.get_og_tags(html)
@@ -72,7 +72,7 @@ module Textract
     attr_reader :md5
     attr_reader :author
 
-    def initialize(url, selectors, format="markdown")
+    def initialize(url, selectors, format)
       @url = url
       agent = Mechanize.new
       agent.user_agent_alias = 'Mac Safari'
