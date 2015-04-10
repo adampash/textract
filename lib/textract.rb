@@ -7,6 +7,10 @@ require 'readability'
 
 module Textract
   # attr_accessor :client
+  TAG_WHITELIST = %w[
+    div span p a img ul ol li blockquote table tr td h1 h2 h3 h4 h5 b em i strong
+    figure
+  ]
 
   def self.get_text(url, selectors=nil, format="markdown")
     @client = Client.new(url, selectors, format)
@@ -43,7 +47,7 @@ module Textract
       article_el = doc
     end
     Readability::Document.new(article_el.to_s,
-                                        tags: %w[div span p a img ul ol li blockquote table tr td h1 h2 h3 h4 h5 b em i strong],
+                                        tags: TAG_WHITELIST,
                                         attributes: %w[src href],
                                         remove_empty_nodes: false,
                                        )
