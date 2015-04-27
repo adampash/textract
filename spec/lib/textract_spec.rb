@@ -1,43 +1,49 @@
-require_relative '../../lib/textract'
+require 'spec_helper'
+require 'textract'
 
-RSpec.configure do |c|
-  # filter_run is short-form alias for filter_run_including
-  c.filter_run :focus => true
-end
-
-describe Textract, :focus do
+describe Textract do
   it "initializes with the get_text method" do
-    url = "http://www.tedcruz.org/about/"
-    article = Textract.get_text(url)
-    expect(article).to be_a_kind_of Textract::Client
+    VCR.use_cassette("cruz") do
+      url = "http://www.tedcruz.org/about/"
+      article = Textract.get_text(url)
+      expect(article).to be_a_kind_of Textract::Client
+    end
   end
 
   it "returns article text based on article tag" do
-    url = "http://gawker.com/1694508525"
-    article = Textract.get_text(url)
-    expect(article.text.include?("Import")).to eq true
-    expect(article.md5).to eq "c11a810a3e73f24aac78fd3e39e69f87"
-    expect(article.author).to eq "Hamilton Nolan"
+    VCR.use_cassette("hamno") do
+      url = "http://gawker.com/1694508525"
+      article = Textract.get_text(url)
+      expect(article.text.include?("Import")).to eq true
+      expect(article.md5).to eq "c11a810a3e73f24aac78fd3e39e69f87"
+      expect(article.author).to eq "Hamilton Nolan"
+    end
   end
 
   it "also includes images" do
-    url = "http://gawker.com/1696731611"
-    img = "http://i.kinja-img.com/gawker-media/image/upload/s--fWYFlEv6--/c_fit,fl_progressive,q_80,w_636/l3sjlg0ariqomd4ubtl6.jpg"
-    article = Textract.get_text(url)
-    expect(article.text.include?(img)).to be true
+    VCR.use_cassette('imgs') do
+      url = "http://gawker.com/1696731611"
+      img = "http://i.kinja-img.com/gawker-media/image/upload/s--fWYFlEv6--/c_fit,fl_progressive,q_80,w_636/l3sjlg0ariqomd4ubtl6.jpg"
+      article = Textract.get_text(url)
+      expect(article.text.include?(img)).to be true
+    end
   end
 
   it "returns article text based on opengraph description" do
-    url = "http://www.tedcruz.org/record/our-standard-the-constitution/"
-    article = Textract.get_text(url)
-    expect(article.text.include?("Ted Cruz")).to eq true
+    VCR.use_cassette('og') do
+      url = "http://www.tedcruz.org/record/our-standard-the-constitution/"
+      article = Textract.get_text(url)
+      expect(article.text.include?("Ted Cruz")).to eq true
+    end
   end
 
   it "can find a twitter profile given a selector" do
-    url = "https://twitter.com/lifehacker"
-    article = Textract.get_text(url, 'p.ProfileHeaderCard-bio.u-dir')
-    expect(article.text.strip).to eq "Don't live to geek; geek to live."
-    expect(article.title).to eq "Lifehacker (@lifehacker) | Twitter"
+    VCR.use_cassette('selector') do
+      url = "https://twitter.com/lifehacker"
+      article = Textract.get_text(url, 'p.ProfileHeaderCard-bio.u-dir')
+      expect(article.text.strip).to eq "Don't live to geek; geek to live."
+      expect(article.title).to eq "Lifehacker (@lifehacker) | Twitter"
+    end
   end
 
   it "gets the page title from the title tag" do
@@ -51,9 +57,19 @@ describe Textract, :focus do
   end
 
   it "converts itself to json" do
-    url = "http://gawker.com/1694508525"
-    article = Textract.get_text(url)
-    expect(article.to_json).to be_a_kind_of String
+    VCR.use_cassette('json') do
+      url = "http://gawker.com/1694508525"
+      article = Textract.get_text(url)
+      expect(article.to_json).to be_a_kind_of String
+    end
+  end
+
+  it "handles problem urls" do
+    VCR.use_cassette('bad frisky') do
+      url = "http://www.thefrisky.com/2015-04-22/10-things-i-was-irrationally-jealous-of-in-high-school-and-admittedly-still-am/"
+      article = Textract.get_text(url)
+      expect(article.to_json).to be_a_kind_of String
+    end
   end
 
 end

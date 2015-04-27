@@ -16,8 +16,12 @@ module Textract
     @client = Client.new(url, selectors, format)
   end
 
-  def self.get_og_tags(html)
-    OpenGraph.new(html)
+  def self.get_og_tags(html, url)
+    begin
+      OpenGraph.new(html)
+    rescue
+      OpenGraph.new(url)
+    end
   end
 
   def self.smart_extract(html, description, selectors)
@@ -47,10 +51,10 @@ module Textract
       article_el = doc
     end
     Readability::Document.new(article_el.to_s,
-                                        tags: TAG_WHITELIST,
-                                        attributes: %w[src href],
-                                        remove_empty_nodes: false,
-                                       )
+                              tags: TAG_WHITELIST,
+                              attributes: %w[src href],
+                              remove_empty_nodes: false,
+                             )
   end
 
   def self.get_page_title(html)
@@ -81,7 +85,7 @@ module Textract
       agent = Mechanize.new
       agent.user_agent_alias = 'Mac Safari'
       @html = agent.get(url).content
-      @tags = Textract.get_og_tags(@html)
+      @tags = Textract.get_og_tags(@html, url)
 
       @article = Textract.smart_extract(@html, @tags.description, selectors)
       if @article.content.nil?
