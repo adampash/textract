@@ -106,6 +106,9 @@ module Textract
       @md5 = Textract.generate_hash @text
       @author = @article.author || Textract.get_author(@html)
       @title = @tags.title || Textract.get_page_title(@html)
+      if @url.match(/\/robots.txt$/) and @title = @text
+        @title = @url
+      end
     end
 
     def as_json

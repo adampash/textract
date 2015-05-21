@@ -97,8 +97,8 @@ describe Textract do
     VCR.use_cassette('robots') do
       url = "http://www.buzzfeed.com/robots.txt"
       text = Textract.get_text(url)
-      expect(text.to_json).to be_a_kind_of String
       expect(text.url).to eq url
+      expect(text.title).to eq url
     end
   end
 
