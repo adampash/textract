@@ -67,7 +67,6 @@ module Textract
   end
 
   def self.generate_hash(text)
-    # require 'pry'; binding.pry
     Digest::MD5.hexdigest text
   end
 
@@ -86,6 +85,7 @@ module Textract
       agent.user_agent_alias = 'Mac Safari'
       @html = agent.get(url).content
       @tags = Textract.get_og_tags(@html, url)
+      @url = @tags.url || @url
 
       @article = Textract.smart_extract(@html, @tags.description, selectors)
       if @article.content.nil?

@@ -15,7 +15,7 @@ describe Textract do
       url = "http://gawker.com/1694508525"
       article = Textract.get_text(url)
       expect(article.text.include?("Import")).to eq true
-      expect(article.md5).to eq "c11a810a3e73f24aac78fd3e39e69f87"
+      expect(article.md5).to eq "9cc00fcdeb4bc41e0649d0776cbb2157"
       expect(article.author).to eq "Hamilton Nolan"
     end
   end
@@ -26,6 +26,19 @@ describe Textract do
       img = "http://i.kinja-img.com/gawker-media/image/upload/s--fWYFlEv6--/c_fit,fl_progressive,q_80,w_636/l3sjlg0ariqomd4ubtl6.jpg"
       article = Textract.get_text(url)
       expect(article.text.include?(img)).to be true
+    end
+  end
+
+  it "returns the canonical url if available" do
+    VCR.use_cassette("hamno") do
+      url = "http://gawker.com/1694508525"
+      article = Textract.get_text(url)
+      expect(article.url).to eq "http://gawker.com/there-are-no-candidates-for-the-middle-class-1694508525"
+    end
+    VCR.use_cassette("buzzfeed hash") do
+      url = "http://www.buzzfeed.com/katenocera/rand-paul-is-on-his-own-this-time#.sseGm85KG"
+      article = Textract.get_text(url)
+      expect(article.url).to eq "http://www.buzzfeed.com/katenocera/rand-paul-is-on-his-own-this-time"
     end
   end
 
