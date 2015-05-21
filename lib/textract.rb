@@ -67,8 +67,25 @@ module Textract
 
   def self.get_author(html)
     name_meta = Nokogiri::HTML(html).search('meta[name="author"]')
+    if name_meta.empty?
+      name_meta = Nokogiri::HTML(html).search('meta[property="author"]')
+    end
     name_meta.attribute('content').value unless name_meta.empty?
   end
+
+  def self.get_twitter(html)
+    twitter_meta = Nokogiri::HTML(html).search('meta[name="twitter:creator"]')
+    twitter_meta.attribute('content').value unless twitter_meta.empty?
+  end
+
+  def self.build_author(article, html)
+    {
+      name: article.author || get_author(html),
+      twitter: get_twitter(html),
+    }
+  end
+
+  # def build_site
 
   def self.generate_hash(text)
     Digest::MD5.hexdigest text
@@ -104,7 +121,7 @@ module Textract
         end
       end
       @md5 = Textract.generate_hash @text
-      @author = @article.author || Textract.get_author(@html)
+      @author = Textract.build_author @article, @html
       @title = @tags.title || Textract.get_page_title(@html)
       if @url.match(/\/robots.txt$/) and @title = @text
         @title = @url

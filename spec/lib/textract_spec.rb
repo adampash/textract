@@ -16,7 +16,7 @@ describe Textract do
       article = Textract.get_text(url)
       expect(article.text.include?("Import")).to eq true
       expect(article.md5).to eq "9cc00fcdeb4bc41e0649d0776cbb2157"
-      expect(article.author).to eq "Hamilton Nolan"
+      expect(article.author[:name]).to eq "Hamilton Nolan"
     end
   end
 
@@ -67,6 +67,20 @@ describe Textract do
   it "gets the author from the meta name tag" do
     html = '<html><head><meta name="author" content="Adam Pash"></head><body><h1>FOO!</h1></body></html>'
     expect(Textract.get_author(html)).to eq "Adam Pash"
+  end
+
+  it "gets twitter handle from metadata" do
+    html = '<html><head><meta name="twitter:creator" content="@adampash"></head><body><h1>FOO!</h1></body></html>'
+    expect(Textract.get_twitter(html)).to eq "@adampash"
+  end
+
+  it "gets more author detail when possible" do
+    VCR.use_cassette('twitter byline') do
+      url = "http://www.buzzfeed.com/daviddobbs/weighing-the-promises-of-big-genomics"
+      text = Textract.get_text(url)
+      expect(text.author[:name]).to eq "David Dobbs"
+      expect(text.author[:twitter]).to eq "@david_dobbs"
+    end
   end
 
   it "converts itself to json" do
