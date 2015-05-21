@@ -38,7 +38,11 @@ module Textract
       i = 1
       until els.count < 2
         search_text = description.split(" ")[0..i].join(" ")
-        els = doc.search "[text()*='#{search_text}']"
+        if search_text.index "'"
+          els = doc.search "[text()*=\"#{search_text}\"]"
+        else
+          els = doc.search "[text()*='#{search_text}']"
+        end
         i += 1
       end
       if els.count == 1

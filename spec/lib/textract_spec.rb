@@ -85,4 +85,12 @@ describe Textract do
     end
   end
 
+  it "handles other problems" do
+    VCR.use_cassette('stackoverflow') do
+      url = "http://stackoverflow.com/questions/4698118/google-chrome-extensions-how-to-include-jquery-in-programatically-injected-cont"
+      text = Textract.get_text(url)
+      expect(text.to_json).to be_a_kind_of String
+    end
+  end
+
 end
