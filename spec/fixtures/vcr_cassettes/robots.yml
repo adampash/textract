@@ -1,0 +1,65 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://www.buzzfeed.com/robots.txt
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip,deflate,identity
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2) AppleWebKit/534.51.22 (KHTML,
+        like Gecko) Version/5.1.1 Safari/534.51.22
+      Accept-Charset:
+      - ISO-8859-1,utf-8;q=0.7,*;q=0.7
+      Accept-Language:
+      - en-us,en;q=0.5
+      Host:
+      - www.buzzfeed.com
+      Connection:
+      - keep-alive
+      Keep-Alive:
+      - 300
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Accept-Ranges:
+      - bytes
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - text/plain
+      Etag:
+      - '"65a75-2d4-51364dd1dcb66"'
+      Last-Modified:
+      - Fri, 10 Apr 2015 20:46:50 GMT
+      Server:
+      - Apache
+      Vary:
+      - Accept-Encoding
+      X-Buzzfeed:
+      - webdr02
+      Content-Length:
+      - '252'
+      Date:
+      - Thu, 21 May 2015 18:09:53 GMT
+      Connection:
+      - keep-alive
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAAAAAAAAA7WSwWrDMBBE7/oKHXoyxGpLT4bSQ/MHIWezlrayQLaEdl0l
+        +fo2hIBkTAuFXt/OsjPDHgnTDizO3MmJ5iGweE+Q/c6gh3Mnn54fpdg7Au9D
+        7qRq2tPkH0oyLJfLBtbAaEM6b4ymMDiPqkDNG73e6Ap6Z0cewml98APRqOpc
+        mBmJNxCVLPrFulkJcSxyN/8R50fn8g/WewtVYmJgpytkgMYhQKqruWcuEESn
+        No2tB/13TZ9OY2+Cpro140iH678UcllLDn5Jsf6nFyEOjnGC2MmROXZK5Zzb
+        u4FWh0nRTXAt+nfxjJn6ckOILyPFDovUAgAA
+    http_version: 
+  recorded_at: Thu, 21 May 2015 18:09:54 GMT
+recorded_with: VCR 2.9.3

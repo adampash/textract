@@ -93,4 +93,13 @@ describe Textract do
     end
   end
 
+  it "handles robots.txt files" do
+    VCR.use_cassette('robots') do
+      url = "http://www.buzzfeed.com/robots.txt"
+      text = Textract.get_text(url)
+      expect(text.to_json).to be_a_kind_of String
+      expect(text.url).to eq url
+    end
+  end
+
 end

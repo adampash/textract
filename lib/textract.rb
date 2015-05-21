@@ -89,7 +89,9 @@ module Textract
       agent.user_agent_alias = 'Mac Safari'
       @html = agent.get(url).content
       @tags = Textract.get_og_tags(@html, url)
-      @url = @tags.url || @url
+      if @tags.url.match(/^(http|ftp)s?:\/\//)
+        @url = @tags.url
+      end
 
       @article = Textract.smart_extract(@html, @tags.description, selectors)
       if @article.content.nil?
