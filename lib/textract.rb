@@ -165,6 +165,7 @@ module Textract
         md5: @md5,
         author: @author,
         title: @title,
+        site: @site,
       }
     end
   end
