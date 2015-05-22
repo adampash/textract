@@ -83,6 +83,15 @@ describe Textract do
     end
   end
 
+  it "gets site detail when possible" do
+    VCR.use_cassette('bits') do
+      url = "http://bits.blogs.nytimes.com/2015/05/21/members-of-congress-ask-for-review-of-dropped-espionage-case/"
+      text = Textract.get_text(url)
+      expect(text.site[:name]).to eq "Bits Blog"
+      expect(text.site[:twitter]).to eq "@nytimesbits"
+    end
+  end
+
   it "converts itself to json" do
     VCR.use_cassette('json') do
       url = "http://gawker.com/1694508525"
