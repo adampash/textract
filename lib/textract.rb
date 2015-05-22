@@ -82,7 +82,8 @@ module Textract
     site_twitter = Nokogiri::HTML(html).search('meta[name="twitter:site"]')
     site_name = Nokogiri::HTML(html).search('meta[property="og:site_name"]')
     if site_name.empty?
-      site = url.match(/(http|ftp)s?:\/\/((\w+\.)?(\w+\.)(\w+))\//)
+      domain_regex = /^(http|ftp)s?:\/\/(([\w\d\-_]+\.)?([\w\d\-_]+)\.(\w+))\//
+      site = url.match domain_regex
       site = site[2] unless site[2].nil?
       site_name = site.sub(/^www\./, '').capitalize!
     else
