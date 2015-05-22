@@ -131,4 +131,12 @@ describe Textract do
     end
   end
 
+  it "handles this bug" do
+    VCR.use_cassette('value bug') do
+      url = "http://www.nytimes.com/2015/05/22/nyregion/hundreds-volunteer-to-educate-nail-salon-workers-on-their-rights.html"
+      text = Textract.get_text(url)
+      expect(text.author[:twitter]).to eq "SarahMaslinNir"
+    end
+  end
+
 end

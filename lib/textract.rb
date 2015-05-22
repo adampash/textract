@@ -75,7 +75,16 @@ module Textract
 
   def self.get_twitter(html)
     twitter_meta = Nokogiri::HTML(html).search('meta[name="twitter:creator"]')
-    twitter_meta.attribute('content').value unless twitter_meta.empty?
+    if !twitter_meta.empty?
+      if !twitter_meta.attribute('content').nil?
+        twitter_meta = twitter_meta.attribute('content').value
+      elsif !twitter_meta.attribute('value').nil?
+        twitter_meta = twitter_meta.attribute('value').value
+      else
+        twitter_meta = nill
+      end
+    end
+    twitter_meta
   end
 
   def self.build_site(url, html)
