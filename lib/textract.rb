@@ -84,10 +84,12 @@ module Textract
     if site_name.empty?
       site = url.match(/(http|ftp)s?:\/\/((\w+\.)?(\w+\.)(\w+))\//)
       site = site[2] unless site[2].nil?
-      site = site.sub(/^www\./, '').capitalize!
+      site_name = site.sub(/^www\./, '').capitalize!
+    else
+      site_name = site_name.attribute('content').value
     end
     {
-      name: site_name.empty? ? nil : site_name.attribute('content').value,
+      name: site_name,
       twitter: site_twitter.empty? ? nil : site_twitter.attribute('content').value,
     }
   end
