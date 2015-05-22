@@ -90,6 +90,12 @@ describe Textract do
       expect(text.site[:name]).to eq "Bits Blog"
       expect(text.site[:twitter]).to eq "@nytimesbits"
     end
+    VCR.use_cassette('site bug') do
+      url = "http://www.nytimes.com/2015/05/22/us/politics/obamas-twitter-debut-potus-attracts-hate-filled-posts.html"
+      text = Textract.get_text(url)
+      expect(text.site[:name]).to eq "Nytimes.com"
+      expect(text.site[:twitter]).to eq "@nytimes"
+    end
   end
 
   it "converts itself to json" do

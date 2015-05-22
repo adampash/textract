@@ -88,9 +88,18 @@ module Textract
     else
       site_name = site_name.attribute('content').value
     end
+    if !site_twitter.empty?
+      if !site_twitter.attribute('content').nil?
+        site_twitter = site_twitter.attribute('content').value
+      elsif !site_twitter.attribute('value').nil?
+        site_twitter = site_twitter.attribute('value').value
+      else
+        site_twitter = nill
+      end
+    end
     {
       name: site_name,
-      twitter: site_twitter.empty? ? nil : site_twitter.attribute('content').value,
+      twitter: site_twitter,
     }
   end
 
