@@ -36,7 +36,7 @@ module Textract
     elsif !description.nil? and article.count == 0
       els = [1,2,3]
       i = 1
-      until els.count < 2
+      until els.count < 2 or i > description.split(" ").length
         search_text = description.split(" ")[0..i].join(" ")
         if search_text.index "'"
           els = doc.search "[text()*=\"#{search_text}\"]"
@@ -49,6 +49,7 @@ module Textract
         el = els[0]
         article_el = el.parent
       else
+        article_el = doc
         # do something else if multiple or no matches
       end
     else

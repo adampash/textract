@@ -139,4 +139,12 @@ describe Textract do
     end
   end
 
+  it "handles the santorum loop bug" do
+    VCR.use_cassette('santorum') do
+      url = "http://www.ricksantorum.com/about_rick"
+      text = Textract.get_text(url)
+      expect(text.title).to eq "About Former Senator Rick Santorum"
+    end
+  end
+
 end
